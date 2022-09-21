@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer;
-
+using votingSystemApp.BusinessLogicLayer;
 
 namespace BusinessLayer
 {
 
-    public class PoolBoothOperation
+    public class PoolBoothOperation: IMethod
     {
         PoolBooth oPoolBooth = new PoolBooth();
         SqlConnection con = new SqlConnection(@"server=BHAVNAWKS651\SQLEXPRESS;database=votingSystem;Integrated Security=true;");
@@ -42,8 +42,8 @@ namespace BusinessLayer
             oPoolBooth.voterId = int.Parse(Console.ReadLine());
 
             con.Open();
-            //Console.WriteLine($"insert into admin values('{name}','{password}')");
-            SqlCommand cmd = new SqlCommand($"insert into tblBooth values('{oPoolBooth.Location}','{oPoolBooth.StartTime}','{oPoolBooth.EndTime}',{oPoolBooth.voterId})", con);
+            Console.WriteLine($"insert into tblBooth values('{oPoolBooth.Location}','{oPoolBooth.StartTime}','{oPoolBooth.EndTime}')");
+            SqlCommand cmd = new SqlCommand($"insert into tblBooth values('{oPoolBooth.Location}','{oPoolBooth.StartTime}','{oPoolBooth.EndTime}')", con);
 
             cmd.ExecuteNonQuery();
             con.Close();
@@ -57,7 +57,7 @@ namespace BusinessLayer
             Console.WriteLine("Enter the  Booth Id that you want to delete ");
             oPoolBooth.BoothId = int.Parse(Console.ReadLine());
             con.Open();
-            SqlCommand cmd = new SqlCommand("delete from sales where id=" + oPoolBooth.BoothId + "", con);
+            SqlCommand cmd = new SqlCommand("delete from tblBooth where BoothID=" + oPoolBooth.BoothId + "", con);
             cmd.ExecuteNonQuery();
             Console.WriteLine("product with id:" + oPoolBooth.BoothId + " deleted successfully");
             con.Close();

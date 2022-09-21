@@ -5,18 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer;
+using votingSystemApp.BusinessLogicLayer;
 
 namespace BusinessLayer
 {
-    class PartyOperation
+    class PartyOperation: IMethod
     {
         Party oParty = new Party();
         SqlConnection con = new SqlConnection(@"server=BHAVNAWKS651\SQLEXPRESS;database=votingSystem;Integrated Security=true;");
-
+        
         public void display()
         {
             con.Open();
-            SqlCommand cmd = new SqlCommand("select * from tblParty", con);
+            SqlCommand cmd = new SqlCommand("select * from tblparty", con);
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
@@ -37,6 +38,7 @@ namespace BusinessLayer
 
             con.Open();
             //Console.WriteLine($"insert into admin values('{name}','{password}')");
+
             SqlCommand cmd = new SqlCommand($"insert into tblParty values('{oParty.PartyName}','{oParty.PartySymbol}')", con);
 
             cmd.ExecuteNonQuery();

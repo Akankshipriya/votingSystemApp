@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,8 @@ namespace BusinessLayer
 {
     public class AdminOperation
     {
+        SqlConnection con = new SqlConnection(@"server=BHAVNAWKS651\SQLEXPRESS;database=votingSystem;Integrated Security=true;");
+
         public List<Admin> adminlist { get; set; }
         public Admin admin { get; set; }
 
@@ -60,12 +63,12 @@ namespace BusinessLayer
             Console.WriteLine(":                           :");
             Console.WriteLine("1. View PoolBooth Detail    :");
             Console.WriteLine("2. Add New PoolBooth        :");
-            Console.WriteLine("3. Delete PoolBooth         :");
-            Console.WriteLine("4. View Voter Details    :");
-            Console.WriteLine("5. Add Voter Details     :");
+            Console.WriteLine("3. Cancel PoolBooth         :");
+            Console.WriteLine("4. View Voter Details       :");
+            Console.WriteLine("5. Add Voter Details        :");
             Console.WriteLine("6. Display Party Detail     :");
             Console.WriteLine("7. Insert Party Details     :");
-            Console.WriteLine("8. View vote count details  :");
+            Console.WriteLine("8. Assign Booth To Voter    :");
         }
         public void PrintDotAnimation(int timer = 10)
         {
@@ -78,19 +81,35 @@ namespace BusinessLayer
             Console.WriteLine();
         }
 
+        public void AssignBoothToVoter()
+        {
+            Console.WriteLine("Enter Voter Id for which you want to assign booth");
+            int id = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter the booth ID to assign");
+            int boothId= int.Parse(Console.ReadLine());
+            con.Open();
+            Console.WriteLine($"insert into VoterBoothRelation values('{id}','{boothId}')");
+            SqlCommand cmd = new SqlCommand($"insert into VoterBoothRelation values('{boothId}','{id}')", con);
+
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
         public void AdminInput(int a)
         {
             VoterOperation oVoterOperation = new VoterOperation();
+            PartyOperation oPartyOperation = new PartyOperation();
+            PoolBoothOperation oPoolBoothOperation = new PoolBoothOperation();
             switch (a)
             {
                 case 1:
-                    
+                    oPoolBoothOperation.display();
                     break;
                 case 2:
-                    
+                    oPoolBoothOperation.Add();
                     break;
                 case 3:
-                    
+                    oPoolBoothOperation.delete();
                     break;
                 case 4:
                     oVoterOperation.display();
@@ -99,7 +118,13 @@ namespace BusinessLayer
                     oVoterOperation.Add();
                     break;
                 case 6:
-                    
+                    oPartyOperation.display();
+                    break;
+                case 7:
+                    oPartyOperation.Add();
+                    break;
+                case 8:
+                    AssignBoothToVoter();
                     break;
                 default:
                     Console.WriteLine("Invalid Input");

@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer;
-
+using votingSystemApp.BusinessLogicLayer;
 
 namespace BusinessLayer
 {
-    public class VoterOperation
+    public class VoterOperation: IMethod
     {
+        
         Voter oVoter = new Voter();
         SqlConnection con = new SqlConnection(@"server=BHAVNAWKS651\SQLEXPRESS;database=votingSystem;Integrated Security=SSPI;");
 
@@ -21,7 +22,7 @@ namespace BusinessLayer
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                Console.WriteLine("Voter id : " + sdr.GetValue(0) + "\n" + "Voter Name : " + sdr.GetValue(1) + "\n" + "Date of Birth : " + sdr.GetValue(2) + "\n" + "AdharCard : " + sdr.GetValue(3) + "\n" + "Pancard : " + sdr.GetValue(4));
+                Console.WriteLine("Voter id : " + sdr.GetValue(0) + "\n" + "Voter Name : " + sdr.GetValue(1) + "\n" + "Date of Birth : " + sdr.GetValue(2).ToString().Substring(0,10) + "\n" + "AdharCard : " + sdr.GetValue(3) + "\n" + "Pancard : " + sdr.GetValue(4));
                 Console.WriteLine("\n");
             }
             con.Close();
@@ -34,6 +35,9 @@ namespace BusinessLayer
             oVoter.voterName = Console.ReadLine();
             Console.WriteLine("Enter Date of Birth {Format : YYYY-MM-DD}");
             oVoter.DOB = Console.ReadLine();
+            string formatedDate = (oVoter.DOB.ToString());
+            int finalDOB = formatedDate.Length;
+            //Console.WriteLine(finalDOB);
             Console.WriteLine("Enter Adharcard Number");
             oVoter.AdharCard = Console.ReadLine();
             Console.WriteLine("Enter PanCard Number");
@@ -42,8 +46,8 @@ namespace BusinessLayer
             oVoter.Password = Console.ReadLine();
 
             con.Open();
-            Console.WriteLine($"insert into tblVoter values('{oVoter.voterName}','{oVoter.DOB}','{oVoter.AdharCard}','{oVoter.Pancard}','{oVoter.Password}')");
-            SqlCommand cmd = new SqlCommand($"insert into tblBooth values('{oVoter.voterName}','{oVoter.DOB}','{oVoter.AdharCard}','{oVoter.Pancard}','{oVoter.Password}')", con);
+            //Console.WriteLine($"insert into tblVoter(voterName,) values('{oVoter.voterName}','{oVoter.DOB}','{oVoter.AdharCard}','{oVoter.Pancard}','{oVoter.Password}')");
+            SqlCommand cmd = new SqlCommand($"insert into tblVoter values('{oVoter.voterName}','{oVoter.DOB}','{oVoter.AdharCard}','{oVoter.Pancard}','{oVoter.Password}')", con);
 
             cmd.ExecuteNonQuery();
             con.Close();
@@ -63,7 +67,20 @@ namespace BusinessLayer
             con.Close();
 
         }
-
+        
+        public void loggedIn()
+        {
+            PartyOperation opartyOperation = new PartyOperation();
+            Console.WriteLine("Here is party details");
+            opartyOperation.display();
+            Console.WriteLine("Enter the Party Id for which you want to cast the vote");
+            int voted = int.Parse(Console.ReadLine());
+            
+            Console.WriteLine("You have voted successfully\nTHANK YOU");
+            
+            
+        }
+        
         public void login()
         {
             Console.WriteLine("Enter your Id");
@@ -79,7 +96,13 @@ namespace BusinessLayer
                 {
                     if (sdr["password"].ToString()==loginPassword)
                     {
-                        Console.WriteLine("Welcome voter");
+                        Console.Clear();
+                        Console.WriteLine($"Welcome {sdr.GetValue(1)}\nStatus : Online\nYou can caste your vote here\nPress 'yes' to continue as online user");
+                        string voterchoice = Console.ReadLine();
+                        if(voterchoice.ToUpper()=="YES")
+                        {
+                            loggedIn();
+                        }
                         break;
                     }
                 }

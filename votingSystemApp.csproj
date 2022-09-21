@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLogicLayer\AdminOperation.cs" />
+    <Compile Include="BusinessLogicLayer\IMethod.cs" />
     <Compile Include="BusinessLogicLayer\PartyOperation.cs" />
     <Compile Include="BusinessLogicLayer\PoolBoothOperation.cs" />
     <Compile Include="BusinessLogicLayer\VoterOperation.cs" />
