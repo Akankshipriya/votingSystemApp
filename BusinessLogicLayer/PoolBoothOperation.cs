@@ -34,12 +34,10 @@ namespace BusinessLayer
 
             Console.WriteLine("Enter Booth Location");
             oPoolBooth.Location = Console.ReadLine();
-            Console.WriteLine("Enter Start time");
+            Console.WriteLine("Enter Start time {Format : YYYY-MM-DD HH:MM:SS AM/PM}");
             oPoolBooth.StartTime = Convert.ToDateTime(Console.ReadLine());
-            Console.WriteLine("Enter End time");
+            Console.WriteLine("Enter End time {Format : YYYY-MM-DD HH:MM:SS AM/PM}");
             oPoolBooth.EndTime = Convert.ToDateTime(Console.ReadLine());
-            Console.WriteLine("Enter Voter Id");
-            oPoolBooth.voterId = int.Parse(Console.ReadLine());
 
             con.Open();
             Console.WriteLine($"insert into tblBooth values('{oPoolBooth.Location}','{oPoolBooth.StartTime}','{oPoolBooth.EndTime}')");

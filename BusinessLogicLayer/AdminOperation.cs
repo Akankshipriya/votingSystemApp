@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using votingSystemApp;
 
 namespace BusinessLayer
 {
@@ -106,7 +107,8 @@ namespace BusinessLayer
                     oPoolBoothOperation.display();
                     break;
                 case 2:
-                    oPoolBoothOperation.Add();
+                    AddDelegate oAddDelegate = new AddDelegate(oPoolBoothOperation.Add);
+                    oAddDelegate.Invoke();
                     break;
                 case 3:
                     oPoolBoothOperation.delete();

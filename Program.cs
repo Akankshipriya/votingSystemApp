@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace votingSystemApp
 {
+
+    public delegate void AddDelegate();
     class Program
     {
         static void Main(string[] args)

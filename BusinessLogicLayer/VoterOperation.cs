@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,9 @@ using votingSystemApp.BusinessLogicLayer;
 
 namespace BusinessLayer
 {
-    public class VoterOperation: IMethod
+    public class VoterOperation : IMethod
     {
-        
+
         Voter oVoter = new Voter();
         SqlConnection con = new SqlConnection(@"server=BHAVNAWKS651\SQLEXPRESS;database=votingSystem;Integrated Security=SSPI;");
 
@@ -22,7 +23,7 @@ namespace BusinessLayer
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                Console.WriteLine("Voter id : " + sdr.GetValue(0) + "\n" + "Voter Name : " + sdr.GetValue(1) + "\n" + "Date of Birth : " + sdr.GetValue(2).ToString().Substring(0,10) + "\n" + "AdharCard : " + sdr.GetValue(3) + "\n" + "Pancard : " + sdr.GetValue(4));
+                Console.WriteLine("Voter id : " + sdr.GetValue(0) + "\n" + "Voter Name : " + sdr.GetValue(1) + "\n" + "Date of Birth : " + sdr.GetValue(2).ToString().Substring(0, 10) + "\n" + "AdharCard : " + sdr.GetValue(3) + "\n" + "Pancard : " + sdr.GetValue(4));
                 Console.WriteLine("\n");
             }
             con.Close();
@@ -67,7 +68,7 @@ namespace BusinessLayer
             con.Close();
 
         }
-        
+
         public void loggedIn()
         {
             PartyOperation opartyOperation = new PartyOperation();
@@ -75,12 +76,13 @@ namespace BusinessLayer
             opartyOperation.display();
             Console.WriteLine("Enter the Party Id for which you want to cast the vote");
             int voted = int.Parse(Console.ReadLine());
-            
+
             Console.WriteLine("You have voted successfully\nTHANK YOU");
-            
-            
+
+
         }
-        
+
+
         public void login()
         {
             Console.WriteLine("Enter your Id");
@@ -88,28 +90,64 @@ namespace BusinessLayer
             Console.WriteLine("Enter your Password");
             string loginPassword = Console.ReadLine();
             con.Open();
-            SqlCommand cmd = new SqlCommand("select * from tblVoter", con);
+            SqlCommand cmd = new SqlCommand("LocationAssignDetails", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                if (int.Parse(sdr["voterID"].ToString()) ==loginId)
+                if (int.Parse(sdr["voterID"].ToString()) == loginId && sdr["password"].ToString() == loginPassword)
                 {
-                    if (sdr["password"].ToString()==loginPassword)
+
+                    Console.Clear();
+                    Console.WriteLine($"Welcome {sdr.GetValue(0)}\nStatus : Online\nYou can caste your vote here\nPress 'yes' to continue as online user\nPress 'Offline' to check offline details");
+                    string voterchoice = Console.ReadLine();
+                    if (voterchoice.ToUpper() == "YES")
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Welcome {sdr.GetValue(1)}\nStatus : Online\nYou can caste your vote here\nPress 'yes' to continue as online user");
-                        string voterchoice = Console.ReadLine();
-                        if(voterchoice.ToUpper()=="YES")
-                        {
-                            loggedIn();
-                        }
+                        loggedIn();
+
                         break;
                     }
+                    else if (voterchoice.ToUpper() == "OFFLINE")
+                    {
+
+                        Console.WriteLine($"Voter Name : {sdr.GetValue(0)}\nLocation : {sdr.GetValue(1)}\nStart Timing : {sdr.GetValue(2)}\nEnd timing : {sdr.GetValue(3)}");
+                        Console.WriteLine("Is the voter ready to vote offline {yes/no}");
+                        string a = Console.ReadLine();
+                        if (a.ToUpper() == "YES")
+                        {
+                            loggedIn();
+                            string myfile = @"D:\\output.txt";
+                            if (!File.Exists(myfile))
+                                using (StreamWriter sw = File.CreateText(myfile))
+                                {
+                                    sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}");
+                                    Console.WriteLine("File Creation done");
+                                }
+                            else
+                                using (StreamWriter sw = File.AppendText(myfile))
+                                {
+                                    sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}");
+                                }
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Caste your vote at location");
+                            break;
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    continue;
                 }
                 Console.WriteLine("Wrong Id or Password");
                 break;
             }
-            
+
             con.Close();
         }
     }
