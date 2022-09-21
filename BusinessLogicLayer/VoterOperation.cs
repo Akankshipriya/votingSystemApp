@@ -117,17 +117,18 @@ namespace BusinessLayer
                         {
                             loggedIn();
                             string myfile = @"D:\\output.txt";
+
+                            if (File.Exists(myfile))
+                            {
+                                File.Delete(myfile);
+                            }
                             if (!File.Exists(myfile))
                                 using (StreamWriter sw = File.CreateText(myfile))
                                 {
-                                    sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}");
-                                    Console.WriteLine("File Creation done");
+                                    sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}"); Console.WriteLine("File Creation done");
                                 }
-                            else
-                                using (StreamWriter sw = File.AppendText(myfile))
-                                {
-                                    sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}");
-                                }
+
+
                             break;
                         }
                         else
