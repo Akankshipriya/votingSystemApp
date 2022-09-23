@@ -69,7 +69,7 @@ namespace BusinessLayer
 
         }
 
-        public void loggedIn()
+        public int loggedIn()
         {
             PartyOperation opartyOperation = new PartyOperation();
             Console.WriteLine("Here is party details");
@@ -78,13 +78,15 @@ namespace BusinessLayer
             int voted = int.Parse(Console.ReadLine());
 
             Console.WriteLine("You have voted successfully\nTHANK YOU");
-
+            return voted;
 
         }
 
 
         public void login()
         {
+            int voterID=0;
+            int voted = 0;
             Console.WriteLine("Enter your Id");
             int loginId = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter your Password");
@@ -97,13 +99,13 @@ namespace BusinessLayer
             {
                 if (int.Parse(sdr["voterID"].ToString()) == loginId && sdr["password"].ToString() == loginPassword)
                 {
-
+                    voterID = Convert.ToInt32(sdr.GetValue(5));
                     Console.Clear();
                     Console.WriteLine($"Welcome {sdr.GetValue(0)}\nStatus : Online\nYou can caste your vote here\nPress 'yes' to continue as online user\nPress 'Offline' to check offline details");
                     string voterchoice = Console.ReadLine();
                     if (voterchoice.ToUpper() == "YES")
                     {
-                        loggedIn();
+                        voted=loggedIn();
 
                         break;
                     }
@@ -115,7 +117,7 @@ namespace BusinessLayer
                         string a = Console.ReadLine();
                         if (a.ToUpper() == "YES")
                         {
-                            loggedIn();
+                            voted=loggedIn();
                             string myfile = @"D:\\output.txt";
 
                             if (File.Exists(myfile))
@@ -127,7 +129,6 @@ namespace BusinessLayer
                                 {
                                     sw.WriteLine($"Record : Voter Name - {sdr.GetValue(0)}, Location - {sdr.GetValue(1)}, Start Timing - {sdr.GetValue(2)}, End timing - {sdr.GetValue(3)}"); Console.WriteLine("File Creation done");
                                 }
-
 
                             break;
                         }
@@ -149,6 +150,12 @@ namespace BusinessLayer
                 break;
             }
 
+            con.Close();
+            
+
+            con.Open();
+            SqlCommand cmd1 = new SqlCommand($"insert into voterCount values('{voted}','{voterID}')", con);
+            cmd1.ExecuteNonQuery();
             con.Close();
         }
     }

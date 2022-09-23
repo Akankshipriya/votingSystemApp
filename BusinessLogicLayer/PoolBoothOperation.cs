@@ -23,7 +23,7 @@ namespace BusinessLayer
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                Console.WriteLine("Booth id : " + sdr.GetValue(0) + "\n" + "Booth Location : " + sdr.GetValue(1) + "\n" + "Start Timing : " + sdr.GetValue(2) + "\n" + "End Timing : " + sdr.GetValue(3) + "\n" + "Voter Id : " + sdr.GetValue(4) + "\n");
+                Console.WriteLine("Booth id : " + sdr.GetValue(0) + "\n" + "Booth Location : " + sdr.GetValue(1) + "\n" + "Start Timing : " + sdr.GetValue(2) + "\n" + "End Timing : " + sdr.GetValue(3) + "\n");
                 Console.WriteLine("\n");
             }
             con.Close();

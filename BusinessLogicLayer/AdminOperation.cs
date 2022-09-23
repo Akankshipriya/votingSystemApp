@@ -70,6 +70,7 @@ namespace BusinessLayer
             Console.WriteLine("6. Display Party Detail     :");
             Console.WriteLine("7. Insert Party Details     :");
             Console.WriteLine("8. Assign Booth To Voter    :");
+            Console.WriteLine("9. Voting result             :");
         }
         public void PrintDotAnimation(int timer = 10)
         {
@@ -128,10 +129,54 @@ namespace BusinessLayer
                 case 8:
                     AssignBoothToVoter();
                     break;
+                case 9:
+                    VoterDetail();
+                    TotalVote();
+                    break;
                 default:
                     Console.WriteLine("Invalid Input");
                     break;
             }
+        }
+
+        public void VoterDetail()
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("voterCountDetail", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            SqlDataReader sdr = cmd.ExecuteReader();
+            
+            while (sdr.Read())
+            {
+                Console.WriteLine("Party id : " + sdr.GetValue(0) + "\n" + "Vote Count : " + sdr.GetValue(1));
+                Console.WriteLine("\n");
+            }
+            con.Close();
+        }
+
+        public void RestVoterDetail()
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("voterCountDetail", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Console.WriteLine("Party id : " + sdr.GetValue(0) + "\n" + "Vote Count : " + sdr.GetValue(1));
+                Console.WriteLine("\n");
+            }
+            con.Close();
+        }
+
+        public void TotalVote()
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select count(PartyId) from voterCount", con);
+            
+            int total = int.Parse(cmd.ExecuteScalar().ToString());
+            Console.WriteLine($"Total vote count : {total}");
+            
+            con.Close();
         }
 
     }
